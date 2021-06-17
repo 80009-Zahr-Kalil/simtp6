@@ -1,0 +1,94 @@
+body {
+    margin: 0 20px;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #131313;
+    color: white;
+
+}
+
+#tablaColas {
+    display: none;
+}
+
+
+#conclusion {
+    display: none;
+}
+
+.titulo{
+    color: teal;
+    text-transform: uppercase;
+    font-size: 40px;
+    letter-spacing: 4px;
+}
+
+.inputs {
+    font-size: 20px;
+}
+
+#selector {
+    background: rgb(22, 88, 143);
+    font-size: 15px;
+    padding: 5px 0;
+    letter-spacing: 1px;
+    border-color: white;
+    border-radius: 5px;
+    color: white;
+}
+
+#politica{
+    display: none;
+    font-size: 25px;
+    margin: 0 20%;
+}
+
+.btn {
+    margin: 30px;
+    padding: 5px;
+    font-size: 20px;
+    background-image: linear-gradient(
+    225deg,
+    #26caf8, 
+    #27d86c);
+    border-radius: 30px;
+    width: 150px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: 0.4s;
+    cursor: pointer;
+}
+.btn:hover {
+    transform: translate(0, -6px);
+    box-shadow: 10px -10px 25px 0 rgba(143, 64, 248, 0.5), -10px 10px 25px 0 rgba(39, 200, 255, 0.5);
+    background-image: linear-gradient(
+        225deg,
+        #c625d0,
+        #26caf8);
+    transition: 0.3s;
+}
+
+#tablaColas { 
+    font-family:'Poppins', sans-serif;
+    width: 80%;
+    margin: 100px auto;
+    background: rgb(93, 109, 126);
+    text-align: center;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #0c0c0c;
+    padding: 8px;
+}
+th {
+    background: rgb(22, 88, 143);
+    color: black;
+    font-weight: bold;
+}
+
+.metrica {
+    background: #27d86c;
+    color: black;
+    font-weight: bold;
+}
