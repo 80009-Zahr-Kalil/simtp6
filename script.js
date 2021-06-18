@@ -41,7 +41,7 @@ function generarColasPA(cantEventos, desde, hasta){
     var grillaFinal = []; 
     duracionViaje = 5;
     var proxLlegadaB = 5;
-    var finViaje = 0;
+    var finViaje = "-";
     var tiempoProxCalentamiento;
     var rndCalentamiento = Math.random();
     var tiempoReparacion = "-";
@@ -60,7 +60,7 @@ function generarColasPA(cantEventos, desde, hasta){
         }    
     }
 
-    tiempoProxCalentamiento = Number(rungeKuttaV1(temperaturaInestabilidad).toFixed(2));
+    tiempoProxCalentamiento = Number(rungeKuttaV1(temperaturaInestabilidad).toFixed());
     var proxCalentamiento = tiempoProxCalentamiento;
 
 
@@ -71,11 +71,6 @@ function generarColasPA(cantEventos, desde, hasta){
         var proxLlegadaA = reloj + tiempoLlegadaA;
         var gananciaActual = 0;
 
-        // if(reloj == proxCalentamiento){
-        //     proxCalentamiento += tiempoProxCalentamiento;
-
-        // }
-
         if(reloj == proxLlegadaB){
             proxLlegadaB += tiempoLlegadaB;
         }
@@ -85,6 +80,10 @@ function generarColasPA(cantEventos, desde, hasta){
         }
         arrayAutosA.push(autoA);
 
+        for (var k=0; k<arrayAutosA.length; k++){   
+            arrayAutosA[k].tiempoEspera++;   
+        }
+
         if (reloj % 5 == 0 ){
             for (var j=0; j<3 ; j++){
                 var autoB = {
@@ -92,17 +91,36 @@ function generarColasPA(cantEventos, desde, hasta){
                 }
                 arrayAutosB.push(autoB);
             }
+        }       
+
+
+        if (reloj == finViaje && ubicacionVagon != "R" || reloj == 5){
+   
+            if(ubicacionVagon=="A"){
+                ubicacionVagon = "B";
+
+                if (arrayAutosA.length >= 5){
+                    arrayAutosA.splice(0,5);
+                    cantAutosFinViaje += 5;
+                    gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje 
+                }
+            }
+            else{
+                ubicacionVagon = "A";
+
+                if (arrayAutosB.length >= 5){
+                    arrayAutosB.splice(0,5);
+                    cantAutosFinViaje += 5;
+                    gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje 
+                }
+            }
+
+            if (reloj >= 10){
+                tiempoViajeAC += 5;
+
+            }
+            finViaje = reloj + duracionViaje;
         }
-
-
-
-        for (var k=0; k<arrayAutosA.length; k++){   
-            arrayAutosA[k].tiempoEspera++;   
-        }
-        
-
-
-
         if(reloj >= proxCalentamiento){
             ubicacionVagonAnterior = ubicacionVagon;
             ubicacionVagon = "R"; // Reparacion
@@ -112,37 +130,9 @@ function generarColasPA(cantEventos, desde, hasta){
             tiempoProxCalentamiento = "-";
             proxCalentamiento = "-";
 
-        }
-        else{
-            if (reloj % 5 == 0 && ubicacionVagon != "R"){
-   
-                if(ubicacionVagon=="A"){
-                    ubicacionVagon = "B";
-    
-                    if (arrayAutosA.length >= 5){
-                        arrayAutosA.splice(0,5);
-                        cantAutosFinViaje += 5;
-                        gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje 
-                    }
-                }
-                else{
-                    ubicacionVagon = "A";
-    
-                    if (arrayAutosB.length >= 5){
-                        arrayAutosB.splice(0,5);
-                        cantAutosFinViaje += 5;
-                        gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje 
-                    }
-                }
-    
-                if (reloj >= 10){
-                    tiempoViajeAC += 5;
-    
-                }
-                finViaje = reloj + duracionViaje;
-            }
+        }        
 
-        }
+    
 
         if(reloj >= finReparacion){
             ubicacionVagon = ubicacionVagonAnterior;
@@ -151,9 +141,6 @@ function generarColasPA(cantEventos, desde, hasta){
             tiempoProxCalentamiento = Number(rungeKuttaV1(temperaturaInestabilidad).toFixed());
             proxCalentamiento = reloj + tiempoProxCalentamiento;            
         }
-
-        // console.log("reloj"+ reloj + "T rep" + tiempoReparacion);
-
         
         for (var k=0; k<arrayAutosB.length; k++){     
             arrayAutosB[k].tiempoEspera++;
@@ -239,7 +226,8 @@ function rellenarTabla() {
         cadena += '<td>' + grilla[i][5] + '</td>';
         cadena += '<td>' + grilla[i][6] + '</td>';
         cadena += '<td>' + grilla[i][7] + '</td>';
-        cadena += '<td>' + grilla[i][8] + '</td>';
+        var direccion = grilla[i][8];
+        cadena += '<td class="direccionVagon'+direccion+'">' + grilla[i][8] + '</td>';
         cadena += '<td>' + grilla[i][9] + '</td>';
         cadena += '<td>' + grilla[i][10] + '</td>';
         if(i == grilla.length-1) {
@@ -262,6 +250,7 @@ function rellenarTabla() {
 
 function generarColasPB(cantEventos, desde, hasta){
     var ubicacionVagon = "A";
+    var ubicacionVagonAnterior;
     var autosPerdidosAC = 0;
     var arrayAutosA = [];
     var arrayAutosB = [];
@@ -271,13 +260,34 @@ function generarColasPB(cantEventos, desde, hasta){
     var colaA = 0; 
     var colaB = 0;
     var filaTabla = [ new Array(24).fill(0), new Array(24).fill(0)];
-    var grillaFinal = [];
+    var grillaFinal = []; 
+    duracionViaje = 5;
     var proxLlegadaB = 5;
-    var finViaje = 1;
-    duracionViaje = 5; 
+    var finViaje = "-";
+    var tiempoProxCalentamiento;
+    var rndCalentamiento = Math.random();
+    var tiempoReparacion = "-";
+    var finReparacion = "-";
+
+    
+    if(rndCalentamiento<0.2){
+        temperaturaInestabilidad = 50;
+    }
+    else{
+        if(rndCalentamiento<0.5){
+            temperaturaInestabilidad = 70;
+        }
+        else{
+            temperaturaInestabilidad = 100;
+        }    
+    }
+
+    tiempoProxCalentamiento = Number(rungeKuttaV1(temperaturaInestabilidad).toFixed());
+    var proxCalentamiento = tiempoProxCalentamiento;
 
 
     for (var i=1; i<=cantEventos ; i++){
+
         var reloj = i;
         var autosPerdidos = 0;
         var proxLlegadaA = reloj + tiempoLlegadaA;
@@ -306,7 +316,7 @@ function generarColasPB(cantEventos, desde, hasta){
             }
         }
 
-        if (reloj == finViaje){
+        if (reloj == finViaje && ubicacionVagon != "R" || reloj == 1){
 
             if(ubicacionVagon=="A"){
                 ubicacionVagon = "B";
@@ -317,7 +327,6 @@ function generarColasPB(cantEventos, desde, hasta){
                     cantAutosFinViaje += 5;
                     gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje;
                     tiempoViajeAC += 5;
-                    // finViaje = reloj + duracionViaje ;
                 } 
                 else{
                     arrayAutosA.splice(0,longitud);
@@ -326,11 +335,9 @@ function generarColasPB(cantEventos, desde, hasta){
                     if(longitud == 0){
                         tiempoViajeAC += 3;
                         duracionViaje = 3;
-                        // finViaje = reloj + duracionViaje ;
                     }
                     else{
                         tiempoViajeAC += 5;
-                        // finViaje = reloj + duracionViaje ;
                     }
                 }            
             }
@@ -344,8 +351,6 @@ function generarColasPB(cantEventos, desde, hasta){
                     cantAutosFinViaje += 5;
                     gananciaActual+= (capacidadVagon * gananciaAuto) - costoViaje;
                     tiempoViajeAC += 5;
-                    // finViaje = reloj + duracionViaje ;
-
                 } 
                 else{
                     arrayAutosB.splice(0,longitud);
@@ -354,18 +359,33 @@ function generarColasPB(cantEventos, desde, hasta){
                     if(longitud == 0){
                         tiempoViajeAC += 3;
                         duracionViaje = 3;
-                        // finViaje = reloj + duracionViaje ;
                     }
                     else{
                         tiempoViajeAC += 5;
-                        // finViaje = reloj + duracionViaje ;
                     }
                 }                
             }  
-
             finViaje = reloj + duracionViaje;
+        }        
+        if(reloj >= proxCalentamiento){
+            ubicacionVagonAnterior = ubicacionVagon;
+            ubicacionVagon = "R"; // Reparacion
+            tiempoReparacion = Number(rungeKuttaReparacionV1(tiempoProxCalentamiento).toFixed());
+            finViaje+= tiempoReparacion;
+            finReparacion = reloj + tiempoReparacion;
+            tiempoProxCalentamiento = "-";
+            proxCalentamiento = "-";
 
+        }   
+        
+        if(reloj >= finReparacion){
+            ubicacionVagon = ubicacionVagonAnterior;
+            tiempoReparacion = "-";
+            finReparacion = "-";
+            tiempoProxCalentamiento = Number(rungeKuttaV1(temperaturaInestabilidad).toFixed());
+            proxCalentamiento = reloj + tiempoProxCalentamiento;            
         }
+
 
         for (var k=0; k<arrayAutosB.length; k++){     
             arrayAutosB[k].tiempoEspera++;
@@ -392,7 +412,7 @@ function generarColasPB(cantEventos, desde, hasta){
         autosPerdidosAC+= autosPerdidos;
 
         filaTabla.splice(0, 1);
-        var insertarRegistro = [reloj,proxLlegadaA,proxLlegadaB,finViaje,ubicacionVagon,colaA,colaB,gananciaAC,tiempoViajeAC,cantAutosFinViaje,autosPerdidosAC];
+        var insertarRegistro = [reloj,proxLlegadaA,proxLlegadaB,finViaje,tiempoProxCalentamiento,proxCalentamiento,tiempoReparacion,finReparacion,ubicacionVagon,colaA,colaB,gananciaAC,tiempoViajeAC,cantAutosFinViaje,autosPerdidosAC];
 
         filaTabla.push(insertarRegistro);
     

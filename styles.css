@@ -92,3 +92,29 @@ th {
     color: black;
     font-weight: bold;
 }
+
+.direccionVagonR {
+    background: #da2020;
+    color: white;
+    font-weight: bold;
+}
+
+.direccionVagonA {
+    background: #20beda;
+    color: white;
+    font-weight: bold;
+}
+
+.direccionVagonB {
+    background: #202cda;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+
+img {
+    float: right;
+    margin-right: 750px;
+}
